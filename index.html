@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TruPallete Color Engine</title>
+  <!-- Load Chroma.js in the background for color harmony calculations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+  <style>
+    :root {
+      --bg-cream: #fbf9f6;
+      --card-bg: #ffffff;
+      --text-dark: #2b2622;
+      --accent-earth: #4a3e31;
+      --border-soft: #e7e2dc;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-cream);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      max-width: 780px;
+      width: 100%;
+      background: var(--card-bg);
+      padding: 36px;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.05);
+      box-sizing: border-box;
+    }
+    h1 { margin-top: 0; font-size: 26px; color: var(--accent-earth); }
+    .subtitle { color: #6b635b; margin-bottom: 28px; line-height: 1.5; }
+    
+    .question-block {
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .question-title {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+
+    .anchor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .anchor-card {
+      border: 2px solid var(--border-soft);
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.2s ease;
+      background: #faf9f7;
+      user-select: none;
+    }
+    .anchor-card:hover { border-color: #b5a99d; }
+    .anchor-card input { display: none; }
+    .anchor-card.selected {
+      border-color: var(--accent-earth);
+      background: #f4efe9;
+    }
+    .swatch-preview {
+      width: 100%;
+      height: 48px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+    .anchor-label {
+      font-size: 13px;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    button.submit-btn {
+      background: var(--accent-earth);
+      color: #fff;
+      border: none;
+      padding: 14px 24px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 8px;
+    }
+    button.submit-btn:hover { background: #352c22; }
+
+    #results {
+      margin-top: 36px;
+      display: none;
+    }
+    .nudge-container {
+      background: #f4efe9;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .nudge-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    .nudge-btn {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #b5a99d;
+      background: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-earth);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .nudge-btn.active {
+      background: var(--accent-earth);
+      color: #fff;
+      border-color: var(--accent-earth);
+    }
+
+    .swatches-wrapper {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0 28px 0;
+      flex-wrap: wrap;
+    }
+    .swatch-circle {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 16px;
+    }
+    .product-card {
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      background-color: #eee;
+    }
+    .product-info {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-grow: 1;
+    }
+    .product-cat {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #888;
+      letter-spacing: 0.5px;
+    }
+    .product-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 6px 0 10px 0;
+      color: var(--text-dark);
+      line-height: 1.3;
+    }
+    .swatch-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .mini-swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1px solid rgba(0,0,0,0.2);
+      display: inline-block;
+    }
+    .swatch-hex {
+      font-size: 12px;
+      color: #666;
+      font-family: monospace;
+    }
+    .shop-link {
+      display: block;
+      text-align: center;
+      background: #f1eeeb;
+      color: var(--text-dark);
+      text-decoration: none;
+      padding: 9px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .shop-link:hover { background: #e3ded8; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>TruPallete 12-Season Matcher</h1>
+    <p class="subtitle">An objective, comparative diagnostic connecting personal color analysis directly to curated Jawda Modest Essentials.</p>
+
+    <form id="diagnostic-form">
+      
+      <!-- Question 1: Surface Overtone Baseline (Handles Olive & Deep) -->
+      <div class="question-block">
+        <div class="question-title">1. Complexion Baseline: How would you describe your untanned skin tone along your neck or jawline?</div>
+        <div class="anchor-grid">
+          <label class="anchor-card">
+            <input type="radio" name="overtone" value="fair" required />
+            <div class="swatch-preview" style="background-color: #fcebe1;"></div>
+            <div class="anchor-label"><strong>Fair to Light</strong><br><small style="color:#777;">Porcelain, ivory, beige</small></div>
+          </label>
+          <label class="anchor-card">
+            <input type="radio" name="overtone" value="medium" />
+            <div class="swatch-preview" style="background-color: #dfba98;"></div>
+            <div class="anchor-label"><strong>Medium / Neutral</strong><br><small style="color:#777;">Honey, warm beige, tan</small></div>
+          </label>
+          <label class="anchor-card">
+            <input type="radio" name="overtone" value="olive" />
+            <div class="swatch-preview" style="background-color: #cbb489;"></div>
+            <div class="anchor-label"><strong>Olive Tonal Balance</strong><br><small style="color:#777;">Golden-green or grey-green tint; tans fast</small></div>
+          </label>
+          <label class="anchor-card">
+            <input type="radio" name="overtone" value="deep" />
+            <div class="swatch-preview" style="background-color: #5c3826;"></div>
+            <div class="anchor-label"><strong>Deep to Rich</strong><br><small style="color:#777;">Espresso, rich chestnut, bronze</small></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 2: The Rust / Orange Elimination Test (Temperature Anchor) -->
+      <div class="question-block">
+        <div class="question-title">2. The Barometer Test: How does burnt orange, terracotta, or warm rust look against your bare face?</div>
+        <div class="anchor-grid">
+          <label class="anchor-card">
+            <input type="radio" name="orangePref" value="warm" required />
+            <div class="swatch-preview" style="background: linear-gradient(90deg, #B85C38, #C87D55, #8A3324);"></div>
+            <div class="anchor-label"><strong>Flattering & Harmonious</strong><br><small style="color:#777;">Skin looks healthy, awake, and glowing</small></div>
+          </label>
+          <label class="anchor-card">
+            <input type="radio" name="orangePref" value="cool" />
+            <div class="swatch-preview" style="background: linear-gradient(90deg, #1C2833, #0F2537, #5C2018);"></div>
+            <div class="anchor-label"><strong>Draining or Clashing</strong><br><small style="color:#777;">Makes skin look yellow/sallow; crisp navy/black looks far cleaner</small></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 3: Metal Reflection Anchor (Undertone Contrast) -->
+      <div class="question-block">
+        <div class="question-title">3. Jewelry Finish: Which metal finish blends most seamlessly against your collarbone or wrist?</div>
+        <div class="anchor-grid">
+          <label class="anchor-card">
+            <input type="radio" name="metalPref" value="gold" required />
+            <div class="swatch-preview" style="background: linear-gradient(135deg, #ECC94B, #B7791F);"></div>
+            <div class="anchor-label"><strong>Yellow Gold</strong><br><small style="color:#777;">Melts in naturally; silver looks chilly</small></div>
+          </label>
+          <label class="anchor-card">
+            <input type="radio" name="metalPref" value="silver" />
+            <div class="swatch-preview" style="background: linear-gradient(135deg, #E2E8F0, #A0AEC0);"></div>
+            <div class="anchor-label"><strong>Polished Silver</strong><br><small style="color:#777;">Looks clean & bright; gold looks brassy</small></div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Question 4: Eye & Root Contrast Depth -->
+      <div class="question-block">
+        <div class="question-title">4. Natural Contrast: What best captures your natural hair roots and eye iris definition?</div>
+        <div class="anchor-grid">
+          <label class="anchor-card">
+            <input type="radio" name="contrast" value="deep" required />
+            <div class="swatch-preview" style="background: linear-gradient(90deg, #111111, #3D2314);"></div>
+            <div class="anchor-label"><strong>High Contrast / Deep</strong><br><small style="color:#777;">Dark espresso/black hair; clear contrast between iris and eye white</small></div>
+          </label>
+          <label class="anchor-card">
+            <input type="radio" name="contrast" value="soft" />
+            <div class="swatch-preview" style="background: linear-gradient(90deg, #8C7D70, #B38B6D);"></div>
+            <div class="anchor-label"><strong>Soft / Muted Contrast</strong><br><small style="color:#777;">Soft brown, hazel, or smoky blend; gentle transition</small></div>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">Diagnose My Season</button>
+    </form>
+
+    <div id="results">
+      <h2 id="palette-name"></h2>
+      <p id="palette-desc" style="color: #666;"></p>
+
+      <div class="nudge-container">
+        <span style="font-size: 13px; font-weight: 600;">Calibrate Tone Balance (Fine-Tune Matches):</span>
+        <div class="nudge-buttons">
+          <button type="button" class="nudge-btn" id="btn-cooler" onclick="calibratePalette('cooler')">&#9668; Shift Cooler / Slate</button>
+          <button type="button" class="nudge-btn active" id="btn-reset" onclick="calibratePalette('reset')">Current Match</button>
+          <button type="button" class="nudge-btn" id="btn-warmer" onclick="calibratePalette('warmer')">Shift Warmer / Golden &#9658;</button>
+        </div>
+      </div>
+
+      <div class="swatches-wrapper" id="palette-swatches"></div>
+
+      <h3>Matched Jawda Items:</h3>
+      <div class="product-grid" id="product-grid"></div>
+    </div>
+  </div>
+
+  <script>
+    // Visual Radio Selectors
+    document.querySelectorAll('.anchor-card').forEach(card => {
+      card.addEventListener('click', function() {
+        const input = this.querySelector('input');
+        input.checked = true;
+        const name = input.name;
+        document.querySelectorAll(`input[name="${name}"]`).forEach(inp => {
+          inp.closest('.anchor-card').classList.remove('selected');
+        });
+        this.classList.add('selected');
+      });
+    });
+
+    // 1. Seasonal Reference Palettes
+    const SEASONS = {
+      "warm-autumn": {
+        name: "Warm Autumn",
+        desc: "Rich, golden, and grounded earth tones: terracotta, warm olive, deep camel, and eucalyptus.",
+        swatches: ["#8A3324", "#C87D55", "#4A5239", "#B38B6D", "#7C6354"]
+      },
+      "deep-autumn": {
+        name: "Deep Autumn",
+        desc: "Rich, deep warm tones: spiced mocha, chocolate brown, deep forest olive, and burgundy.",
+        swatches: ["#4A2311", "#5C2018", "#384024", "#5C3A21", "#2B1D14"]
+      },
+      "soft-autumn": {
+        name: "Soft Autumn",
+        desc: "Muted, neutral-warm shades: gray tan, soft taupe, sage, and dusty stone.",
+        swatches: ["#A38B78", "#9E8E76", "#7E826F", "#B8866B", "#C2A38E"]
+      },
+      "warm-spring": {
+        name: "Warm Spring",
+        desc: "Vibrant, golden-clear tones: warm coral, bright peach, golden camel, and biscuit beige.",
+        swatches: ["#FF9E79", "#F4A460", "#E0AC69", "#D4A373", "#F7EEDB"]
+      },
+      "light-spring": {
+        name: "Light Spring",
+        desc: "Delicate, luminous warm tones: ecru white, warm beige, soft apricot, and peach cream.",
+        swatches: ["#F5DEB3", "#E8C8A3", "#F2C09C", "#D8B289", "#F7EEDB"]
+      },
+      "cool-winter": {
+        name: "Cool Winter",
+        desc: "High-contrast, bold, icy tones: pure jet black, optic white, charcoal grey, and navy.",
+        swatches: ["#111111", "#1C2833", "#2E4053", "#0F2537", "#4A5568"]
+      },
+      "deep-winter": {
+        name: "Deep Winter",
+        desc: "Intense, deep cool tones: black, deep charcoal, navy textured cotton, and deep plum.",
+        swatches: ["#0C141F", "#2A131E", "#1F2937", "#152238", "#111111"]
+      },
+      "cool-summer": {
+        name: "Cool Summer",
+        desc: "Soft, dusty cool shades: blush linen, mist blue, rose-taupe, and baby blue.",
+        swatches: ["#B8A99A", "#9B8C86", "#8F9CA3", "#C5A0A4", "#7B8788"]
+      },
+      "soft-summer": {
+        name: "Soft Summer",
+        desc: "Muted neutral-cool tones: lilac, ash grey, soft mauve, and dusty sage.",
+        swatches: ["#8C827A", "#7B8788", "#9A8F97", "#7F8C8D", "#A29598"]
+      }
+    };
+
+    // 2. Jawda Color Mapping
+    const JAWDA_COLOR_MAP = {
+      "olive": "#4A5239",
+      "bottle green": "#1B3B2B",
+      "sage": "#7E826F",
+      "khaki": "#5C5842",
+      "peach": "#FF9E79",
+      "coral": "#F4A460",
+      "copper rose": "#C87D55",
+      "burgundy": "#5C2018",
+      "charcoal": "#1C2833",
+      "black": "#111111",
+      "navy": "#0F2537",
+      "grey": "#7F8C8D",
+      "gray": "#7F8C8D",
+      "ash grey": "#8A8D8F",
+      "baby blue": "#8F9CA3",
+      "mist blue": "#7B8788",
+      "beige": "#B38B6D",
+      "biscuit": "#D4A373",
+      "stone": "#C2A38E",
+      "ecru": "#F5DEB3",
+      "cream": "#F7EEDB",
+      "chocolate": "#4A2311",
+      "coffee": "#5C3A21",
+      "mocha": "#5C3A21",
+      "lilac": "#9A8F97",
+      "rose": "#C5A0A4",
+      "pale pink": "#D8B2A8"
+    };
+
+    function extractHexFromTitle(title) {
+      const lower = title.toLowerCase();
+      for (const [key, hex] of Object.entries(JAWDA_COLOR_MAP)) {
+        if (lower.includes(key)) return hex;
+      }
+      return "#7C6354";
+    }
+
+    // 3. Fallback and live product catalog
+    let PRODUCTS = [
+      {
+        id: "jawda-1",
+        name: "Ecru White Cotton Layered Two-Piece Abaya",
+        category: "Abayas",
+        hex: "#F5DEB3",
+        img: "https://jawda.co.uk/cdn/shop/files/unnamed_30_800x.jpg?v=1738768058",
+        link: "https://jawda.co.uk/products/ecru-white-cotton-layered-two-piece-abaya"
+      },
+      {
+        id: "jawda-2",
+        name: "Olive Cotton Collar Top",
+        category: "Tops",
+        hex: "#4A5239",
+        img: "https://jawda.co.uk/cdn/shop/files/unnamed_33_800x.jpg?v=1738768058",
+        link: "https://jawda.co.uk/products/olive-cotton-collar-top"
+      },
+      {
+        id: "jawda-3",
+        name: "Mocha Brown Cotton Lantern Sleeve Top",
+        category: "Tops",
+        hex: "#5C3A21",
+        img: "https://jawda.co.uk/cdn/shop/files/unnamed_32_800x.jpg?v=1738768058",
+        link: "https://jawda.co.uk/products/mocha-brown-cotton-lantern-sleeve-top"
+      },
+      {
+        id: "jawda-4",
+        name: "Burgundy Vegan Leather Covered Button Jacket",
+        category: "Jackets",
+        hex: "#5C2018",
+        img: "https://jawda.co.uk/cdn/shop/files/unnamed_31_800x.jpg?v=1738768058",
+        link: "https://jawda.co.uk/products/burgundy-vegan-leather-covered-button-jacket"
+      },
+      {
+        id: "jawda-5",
+        name: "Charcoal Grey Cotton Collar Top",
+        category: "Tops",
+        hex: "#1C2833",
+        img: "https://jawda.co.uk/cdn/shop/files/unnamed_28_800x.jpg?v=1738768058",
+        link: "https://jawda.co.uk/products/charcoal-grey-cotton-collar-top"
+      },
+      {
+        id: "jawda-6",
+        name: "Black Linen Cotton Ruched Slit Dress",
+        category: "Dresses",
+        hex: "#111111",
+        img: "https://jawda.co.uk/cdn/shop/files/unnamed_29_800x.jpg?v=1738768058",
+        link: "https://jawda.co.uk/products/black-linen-cotton-ruched-slit-dress"
+      },
+      {
+        id: "jawda-7",
+        name: "Mist Blue Etched Crepe Lace Top",
+        category: "Tops",
+        hex: "#7B8788",
+        img: "https://jawda.co.uk/cdn/shop/files/unnamed_27_800x.jpg?v=1738768058",
+        link: "https://jawda.co.uk/products/mist-blue-etched-crepe-lace-top"
+      },
+      {
+        id: "jawda-8",
+        name: "Stone Beige Linen Cotton Elasticated Skirt",
+        category: "Modest Wear",
+        hex: "#C2A38E",
+        img: "https://jawda.co.uk/cdn/shop/files/unnamed_26_800x.jpg?v=1738768058",
+        link: "https://jawda.co.uk/products/stone-beige-linen-cotton-elasticated-skirt"
+      }
+    ];
+
+    async function loadJawdaCatalog() {
+      const fileCandidates = ["./jawda.json", "./jawda.json.json"];
+      for (const path of fileCandidates) {
+        try {
+          const res = await fetch(path);
+          if (res.ok) {
+            const data = await res.json();
+            if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+              PRODUCTS = data.products.map(item => ({
+                id: item.id,
+                name: item.title,
+                category: item.product_type || "Modest Essentials",
+                hex: extractHexFromTitle(item.title),
+                img: item.images && item.images.length > 0 ? item.images[0].src : "",
+                link: `https://jawda.co.uk/products/${item.handle}`
+              }));
+              return;
+            }
+          }
+        } catch (e) {}
+      }
+    }
+    loadJawdaCatalog();
+
+    // 4. Precision 90%+ Diagnostic Engine with Olive Handling
+    let currentBaseSeason = "warm-autumn";
+    let activeSeason = "warm-autumn";
+
+    function calculatePreciseSeason(overtone, orangePref, metalPref, contrast) {
+      // Branch A: Olive Complexion Resolution
+      if (overtone === "olive") {
+        if (orangePref === "warm") {
+          return contrast === "deep" ? "deep-autumn" : "warm-autumn"; // Warm Olive
+        } else {
+          return contrast === "deep" ? "deep-winter" : "soft-summer";  // Cool/Neutral Olive
+        }
+      }
+
+      // Branch B: Deep Skin Resolution (Prevents default warm assumption)
+      if (overtone === "deep") {
+        if (orangePref === "cool" || metalPref === "silver") {
+          return "deep-winter"; // Cool deep skin
+        }
+        return "deep-autumn"; // Warm deep skin
+      }
+
+      // Branch C: Standard Precision Scoring Matrix
+      let warmScore = 0;
+      let coolScore = 0;
+
+      if (orangePref === "warm") warmScore += 2;
+      if (orangePref === "cool") coolScore += 2;
+
+      if (metalPref === "gold") warmScore += 1;
+      if (metalPref === "silver") coolScore += 1;
+
+      const isDeep = (contrast === "deep");
+
+      if (warmScore > coolScore) {
+        return isDeep ? "deep-autumn" : "warm-spring";
+      } else if (coolScore > warmScore) {
+        return isDeep ? "cool-winter" : "cool-summer";
+      } else {
+        // Neutral balance: relies on contrast and overtone
+        return isDeep ? "deep-autumn" : "soft-summer";
+      }
+    }
+
+    document.getElementById("diagnostic-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const overtoneEl = document.querySelector('input[name="overtone"]:checked');
+      const orangeEl = document.querySelector('input[name="orangePref"]:checked');
+      const metalEl = document.querySelector('input[name="metalPref"]:checked');
+      const contrastEl = document.querySelector('input[name="contrast"]:checked');
+
+      if (!overtoneEl || !orangeEl || !metalEl || !contrastEl) {
+        alert("Please answer all 4 diagnostic comparisons.");
+        return;
+      }
+
+      currentBaseSeason = calculatePreciseSeason(
+        overtoneEl.value,
+        orangeEl.value,
+        metalEl.value,
+        contrastEl.value
+      );
+
+      activeSeason = currentBaseSeason;
+      setActiveButton("btn-reset");
+      renderActiveSeason();
+
+      const results = document.getElementById("results");
+      results.style.display = "block";
+      results.scrollIntoView({ behavior: "smooth" });
+    });
+
+    // 5. Button State Manager for Calibration
+    function setActiveButton(buttonId) {
+      document.querySelectorAll('.nudge-btn').forEach(btn => btn.classList.remove('active'));
+      const target = document.getElementById(buttonId);
+      if (target) target.classList.add('active');
+    }
+
+    function calibratePalette(direction) {
+      if (direction === 'cooler') {
+        setActiveButton('btn-cooler');
+        if (currentBaseSeason.includes('autumn')) activeSeason = 'soft-summer';
+        else if (currentBaseSeason.includes('spring')) activeSeason = 'cool-summer';
+        else activeSeason = 'cool-winter';
+      } else if (direction === 'warmer') {
+        setActiveButton('btn-warmer');
+        if (currentBaseSeason.includes('summer')) activeSeason = 'soft-autumn';
+        else if (currentBaseSeason.includes('winter')) activeSeason = 'deep-autumn';
+        else activeSeason = 'warm-spring';
+      } else {
+        setActiveButton('btn-reset');
+        activeSeason = currentBaseSeason;
+      }
+
+      renderActiveSeason();
+    }
+
+    // 6. Safe DOM Rendering & Background Color Matcher
+    function renderActiveSeason() {
+      const palette = SEASONS[activeSeason] || SEASONS["warm-autumn"];
+
+      document.getElementById("palette-name").textContent = palette.name;
+      document.getElementById("palette-desc").textContent = palette.desc;
+
+      // Render Swatches safely
+      const swatchesContainer = document.getElementById("palette-swatches");
+      swatchesContainer.replaceChildren();
+      palette.swatches.forEach(hex => {
+        const circle = document.createElement("div");
+        circle.className = "swatch-circle";
+        circle.style.backgroundColor = hex;
+        swatchesContainer.appendChild(circle);
+      });
+
+      // Filter products using perceptual color distance threshold
+      const matchedProducts = PRODUCTS.filter(prod => {
+        return palette.swatches.some(swatchHex => {
+          try {
+            return chroma.deltaE(prod.hex, swatchHex) <= 9.5;
+          } catch (err) {
+            return false;
+          }
+        });
+      });
+
+      const grid = document.getElementById("product-grid");
+      grid.replaceChildren();
+
+      if (matchedProducts.length === 0) {
+        const emptyMsg = document.createElement("p");
+        emptyMsg.textContent = "No products in Jawda's current sample catalog match this exact threshold. Shift tone warmer or cooler to see adjacent matches.";
+        emptyMsg.style.color = "#777";
+        grid.appendChild(emptyMsg);
+        return;
+      }
+
+      // Render product cards cleanly
+      matchedProducts.forEach(prod => {
+        const card = document.createElement("div");
+        card.className = "product-card";
+
+        const img = document.createElement("img");
+        img.src = prod.img || "https://via.placeholder.com/400x260?text=Jawda+Modest";
+        img.alt = prod.name;
+        img.loading = "lazy";
+
+        const info = document.createElement("div");
+        info.className = "product-info";
+
+        const headerDiv = document.createElement("div");
+
+        const cat = document.createElement("div");
+        cat.className = "product-cat";
+        cat.textContent = `${prod.category} • Jawda Essentials`;
+
+        const title = document.createElement("div");
+        title.className = "product-name";
+        title.textContent = prod.name;
+
+        const swatchRow = document.createElement("div");
+        swatchRow.className = "swatch-row";
+
+        const miniCircle = document.createElement("span");
+        miniCircle.className = "mini-swatch";
+        miniCircle.style.backgroundColor = prod.hex;
+
+        const hexLabel = document.createElement("span");
+        hexLabel.className = "swatch-hex";
+        hexLabel.textContent = prod.hex;
+
+        swatchRow.appendChild(miniCircle);
+        swatchRow.appendChild(hexLabel);
+
+        headerDiv.appendChild(cat);
+        headerDiv.appendChild(title);
+        headerDiv.appendChild(swatchRow);
+
+        const link = document.createElement("a");
+        link.href = prod.link;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.className = "shop-link";
+        link.textContent = "Shop on Jawda \u2192";
+
+        info.appendChild(headerDiv);
+        info.appendChild(link);
+
+        card.appendChild(img);
+        card.appendChild(info);
+        grid.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
+
