@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TruPallete Color Engine</title>
-  <!-- Load Chroma.js in the background for color harmony calculations -->
+  <title>TruPallete 12-Season Multi-Brand Engine</title>
+  <!-- Load Chroma.js for background color distance calculations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
   <style>
     :root {
@@ -25,7 +25,7 @@
       align-items: center;
     }
     .container {
-      max-width: 780px;
+      max-width: 820px;
       width: 100%;
       background: var(--card-bg);
       padding: 36px;
@@ -132,6 +132,31 @@
       border-color: var(--accent-earth);
     }
 
+    /* Brand Filter Tabs */
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0 20px 0;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .brand-filter-btn {
+      background: #f1eeeb;
+      border: 1px solid #dcd5ce;
+      color: var(--text-dark);
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .brand-filter-btn.active {
+      background: var(--accent-earth);
+      color: #fff;
+      border-color: var(--accent-earth);
+    }
+
     .swatches-wrapper {
       display: flex;
       gap: 8px;
@@ -147,7 +172,7 @@
 
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 16px;
     }
     .product-card {
@@ -160,7 +185,7 @@
     }
     .product-card img {
       width: 100%;
-      height: 200px;
+      height: 210px;
       object-fit: cover;
       background-color: #eee;
     }
@@ -171,6 +196,25 @@
       justify-content: space-between;
       flex-grow: 1;
     }
+    .brand-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      align-self: flex-start;
+    }
+    .brand-badge.jawda {
+      background-color: #f3ece4;
+      color: #5c3a21;
+    }
+    .brand-badge.vela {
+      background-color: #e9eff5;
+      color: #1e3a5f;
+    }
     .product-cat {
       font-size: 11px;
       text-transform: uppercase;
@@ -180,7 +224,7 @@
     .product-name {
       font-size: 14px;
       font-weight: 600;
-      margin: 6px 0 10px 0;
+      margin: 4px 0 10px 0;
       color: var(--text-dark);
       line-height: 1.3;
     }
@@ -219,12 +263,11 @@
 <body>
 
   <div class="container">
-    <h1>TruPallete 12-Season Matcher</h1>
-    <p class="subtitle">An objective, comparative diagnostic connecting personal color analysis directly to curated Jawda Modest Essentials.</p>
+    <h1>TruPallete 12-Season Multi-Brand Engine</h1>
+    <p class="subtitle">An objective, comparative diagnostic connecting personal color analysis directly to curated essentials across <strong>Jawda Modest Essentials</strong> and <strong>Vela Scarves</strong>.</p>
 
     <form id="diagnostic-form">
-      
-      <!-- Question 1: Surface Overtone Baseline (Handles Olive & Deep) -->
+      <!-- Question 1: Surface Baseline -->
       <div class="question-block">
         <div class="question-title">1. Complexion Baseline: How would you describe your untanned skin tone along your neck or jawline?</div>
         <div class="anchor-grid">
@@ -251,7 +294,7 @@
         </div>
       </div>
 
-      <!-- Question 2: The Rust / Orange Elimination Test (Temperature Anchor) -->
+      <!-- Question 2: The Barometer Test -->
       <div class="question-block">
         <div class="question-title">2. The Barometer Test: How does burnt orange, terracotta, or warm rust look against your bare face?</div>
         <div class="anchor-grid">
@@ -263,12 +306,12 @@
           <label class="anchor-card">
             <input type="radio" name="orangePref" value="cool" />
             <div class="swatch-preview" style="background: linear-gradient(90deg, #1C2833, #0F2537, #5C2018);"></div>
-            <div class="anchor-label"><strong>Draining or Clashing</strong><br><small style="color:#777;">Makes skin look yellow/sallow; crisp navy/black looks far cleaner</small></div>
+            <div class="anchor-label"><strong>Draining or Clashing</strong><br><small style="color:#777;">Makes skin look yellow/sallow; navy or black is cleaner</small></div>
           </label>
         </div>
       </div>
 
-      <!-- Question 3: Metal Reflection Anchor (Undertone Contrast) -->
+      <!-- Question 3: Metal Reflection Anchor -->
       <div class="question-block">
         <div class="question-title">3. Jewelry Finish: Which metal finish blends most seamlessly against your collarbone or wrist?</div>
         <div class="anchor-grid">
@@ -285,30 +328,37 @@
         </div>
       </div>
 
-      <!-- Question 4: Eye & Root Contrast Depth -->
+      <!-- Question 4: Natural Contrast -->
       <div class="question-block">
         <div class="question-title">4. Natural Contrast: What best captures your natural hair roots and eye iris definition?</div>
         <div class="anchor-grid">
           <label class="anchor-card">
             <input type="radio" name="contrast" value="deep" required />
             <div class="swatch-preview" style="background: linear-gradient(90deg, #111111, #3D2314);"></div>
-            <div class="anchor-label"><strong>High Contrast / Deep</strong><br><small style="color:#777;">Dark espresso/black hair; clear contrast between iris and eye white</small></div>
+            <div class="anchor-label"><strong>High Contrast / Deep</strong><br><small style="color:#777;">Dark espresso/black hair; clear eye contrast</small></div>
           </label>
           <label class="anchor-card">
             <input type="radio" name="contrast" value="soft" />
             <div class="swatch-preview" style="background: linear-gradient(90deg, #8C7D70, #B38B6D);"></div>
-            <div class="anchor-label"><strong>Soft / Muted Contrast</strong><br><small style="color:#777;">Soft brown, hazel, or smoky blend; gentle transition</small></div>
+            <div class="anchor-label"><strong>Soft / Muted Contrast</strong><br><small style="color:#777;">Soft brown, hazel, or smoky gentle transition</small></div>
           </label>
         </div>
       </div>
 
-      <button type="submit" class="submit-btn">Diagnose My Season</button>
+      <button type="submit" class="submit-btn">Diagnose My Season & Filter Catalog</button>
     </form>
 
     <div id="results">
       <h2 id="palette-name"></h2>
       <p id="palette-desc" style="color: #666;"></p>
 
+      <!-- Visual Color Wheel -->
+      <div style="display: flex; flex-direction: column; align-items: center; margin: 24px 0;">
+        <canvas id="color-wheel-canvas" width="220" height="220" style="border-radius: 50%; box-shadow: 0 4px 14px rgba(0,0,0,0.08);"></canvas>
+        <p id="wheel-caption" style="font-size: 13px; color: #666; margin-top: 10px; font-weight: 500;"></p>
+      </div>
+
+      <!-- Real-Time Calibration Slider -->
       <div class="nudge-container">
         <span style="font-size: 13px; font-weight: 600;">Calibrate Tone Balance (Fine-Tune Matches):</span>
         <div class="nudge-buttons">
@@ -320,7 +370,15 @@
 
       <div class="swatches-wrapper" id="palette-swatches"></div>
 
-      <h3>Matched Jawda Items:</h3>
+      <!-- Brand Filter Tabs -->
+      <div class="filter-bar">
+        <span style="font-size: 13px; font-weight: 600; color: #555;">Filter Brand:</span>
+        <button type="button" class="brand-filter-btn active" id="brand-all" onclick="setBrandFilter('all')">All Brands</button>
+        <button type="button" class="brand-filter-btn" id="brand-jawda" onclick="setBrandFilter('Jawda')">Jawda</button>
+        <button type="button" class="brand-filter-btn" id="brand-vela" onclick="setBrandFilter('Vela')">Vela Scarves</button>
+      </div>
+
+      <h3>Curated Matches:</h3>
       <div class="product-grid" id="product-grid"></div>
     </div>
   </div>
@@ -339,98 +397,60 @@
       });
     });
 
-    // 1. Seasonal Reference Palettes
     const SEASONS = {
       "warm-autumn": {
         name: "Warm Autumn",
-        desc: "Rich, golden, and grounded earth tones: terracotta, warm olive, deep camel, and eucalyptus.",
+        desc: "Rich, golden, and grounded earth tones: terracotta, cinnamon rust, warm olive, and camel.",
         swatches: ["#8A3324", "#C87D55", "#4A5239", "#B38B6D", "#7C6354"]
       },
       "deep-autumn": {
         name: "Deep Autumn",
-        desc: "Rich, deep warm tones: spiced mocha, chocolate brown, deep forest olive, and burgundy.",
+        desc: "Rich, deep warm tones: mocha brown, truffle chocolate, deep olive, and burgundy.",
         swatches: ["#4A2311", "#5C2018", "#384024", "#5C3A21", "#2B1D14"]
       },
       "soft-autumn": {
         name: "Soft Autumn",
-        desc: "Muted, neutral-warm shades: gray tan, soft taupe, sage, and dusty stone.",
+        desc: "Muted, neutral-warm shades: sage mist, warm travertine, gray tan, and soft stone.",
         swatches: ["#A38B78", "#9E8E76", "#7E826F", "#B8866B", "#C2A38E"]
       },
       "warm-spring": {
         name: "Warm Spring",
-        desc: "Vibrant, golden-clear tones: warm coral, bright peach, golden camel, and biscuit beige.",
+        desc: "Vibrant, golden-clear tones: honey amber, coral sorbet, bright peach, and golden beige.",
         swatches: ["#FF9E79", "#F4A460", "#E0AC69", "#D4A373", "#F7EEDB"]
       },
       "light-spring": {
         name: "Light Spring",
-        desc: "Delicate, luminous warm tones: ecru white, warm beige, soft apricot, and peach cream.",
+        desc: "Delicate, luminous warm tones: swan white, buttercream, soft apricot, and peach cream.",
         swatches: ["#F5DEB3", "#E8C8A3", "#F2C09C", "#D8B289", "#F7EEDB"]
       },
       "cool-winter": {
         name: "Cool Winter",
-        desc: "High-contrast, bold, icy tones: pure jet black, optic white, charcoal grey, and navy.",
+        desc: "High-contrast, bold, icy tones: jet black, pure white, charcoal grey, and navy.",
         swatches: ["#111111", "#1C2833", "#2E4053", "#0F2537", "#4A5568"]
       },
       "deep-winter": {
         name: "Deep Winter",
-        desc: "Intense, deep cool tones: black, deep charcoal, navy textured cotton, and deep plum.",
+        desc: "Intense, deep cool tones: black, midnight navy, deep plum, and velvet sapphire.",
         swatches: ["#0C141F", "#2A131E", "#1F2937", "#152238", "#111111"]
       },
       "cool-summer": {
         name: "Cool Summer",
-        desc: "Soft, dusty cool shades: blush linen, mist blue, rose-taupe, and baby blue.",
+        desc: "Soft, dusty cool shades: powder rose, mist blue, sterling silver, and sky blue.",
         swatches: ["#B8A99A", "#9B8C86", "#8F9CA3", "#C5A0A4", "#7B8788"]
       },
       "soft-summer": {
         name: "Soft Summer",
-        desc: "Muted neutral-cool tones: lilac, ash grey, soft mauve, and dusty sage.",
+        desc: "Muted neutral-cool tones: lilac, ashwood, soft mauve, and dusty sage.",
         swatches: ["#8C827A", "#7B8788", "#9A8F97", "#7F8C8D", "#A29598"]
       }
     };
 
-    // 2. Jawda Color Mapping
-    const JAWDA_COLOR_MAP = {
-      "olive": "#4A5239",
-      "bottle green": "#1B3B2B",
-      "sage": "#7E826F",
-      "khaki": "#5C5842",
-      "peach": "#FF9E79",
-      "coral": "#F4A460",
-      "copper rose": "#C87D55",
-      "burgundy": "#5C2018",
-      "charcoal": "#1C2833",
-      "black": "#111111",
-      "navy": "#0F2537",
-      "grey": "#7F8C8D",
-      "gray": "#7F8C8D",
-      "ash grey": "#8A8D8F",
-      "baby blue": "#8F9CA3",
-      "mist blue": "#7B8788",
-      "beige": "#B38B6D",
-      "biscuit": "#D4A373",
-      "stone": "#C2A38E",
-      "ecru": "#F5DEB3",
-      "cream": "#F7EEDB",
-      "chocolate": "#4A2311",
-      "coffee": "#5C3A21",
-      "mocha": "#5C3A21",
-      "lilac": "#9A8F97",
-      "rose": "#C5A0A4",
-      "pale pink": "#D8B2A8"
-    };
-
-    function extractHexFromTitle(title) {
-      const lower = title.toLowerCase();
-      for (const [key, hex] of Object.entries(JAWDA_COLOR_MAP)) {
-        if (lower.includes(key)) return hex;
-      }
-      return "#7C6354";
-    }
-
-    // 3. Fallback and live product catalog
+    // 2. Multi-Brand Product Catalog: Jawda Essentials + Vela Scarves
     let PRODUCTS = [
+      // JAWDA ITEMS
       {
         id: "jawda-1",
+        brand: "Jawda",
         name: "Ecru White Cotton Layered Two-Piece Abaya",
         category: "Abayas",
         hex: "#F5DEB3",
@@ -439,6 +459,7 @@
       },
       {
         id: "jawda-2",
+        brand: "Jawda",
         name: "Olive Cotton Collar Top",
         category: "Tops",
         hex: "#4A5239",
@@ -447,6 +468,7 @@
       },
       {
         id: "jawda-3",
+        brand: "Jawda",
         name: "Mocha Brown Cotton Lantern Sleeve Top",
         category: "Tops",
         hex: "#5C3A21",
@@ -455,6 +477,7 @@
       },
       {
         id: "jawda-4",
+        brand: "Jawda",
         name: "Burgundy Vegan Leather Covered Button Jacket",
         category: "Jackets",
         hex: "#5C2018",
@@ -463,6 +486,7 @@
       },
       {
         id: "jawda-5",
+        brand: "Jawda",
         name: "Charcoal Grey Cotton Collar Top",
         category: "Tops",
         hex: "#1C2833",
@@ -471,6 +495,7 @@
       },
       {
         id: "jawda-6",
+        brand: "Jawda",
         name: "Black Linen Cotton Ruched Slit Dress",
         category: "Dresses",
         hex: "#111111",
@@ -479,6 +504,7 @@
       },
       {
         id: "jawda-7",
+        brand: "Jawda",
         name: "Mist Blue Etched Crepe Lace Top",
         category: "Tops",
         hex: "#7B8788",
@@ -487,61 +513,165 @@
       },
       {
         id: "jawda-8",
+        brand: "Jawda",
         name: "Stone Beige Linen Cotton Elasticated Skirt",
-        category: "Modest Wear",
+        category: "Skirts",
         hex: "#C2A38E",
         img: "https://jawda.co.uk/cdn/shop/files/unnamed_26_800x.jpg?v=1738768058",
         link: "https://jawda.co.uk/products/stone-beige-linen-cotton-elasticated-skirt"
+      },
+
+      // VELA SCARVES ITEMS
+      {
+        id: "vela-1",
+        brand: "Vela",
+        name: "Cinnamon Lightweight Modal",
+        category: "Hijabs",
+        hex: "#8A3324",
+        img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&auto=format&fit=crop&q=60",
+        link: "https://velascarves.com/products/cinnamon-modal"
+      },
+      {
+        id: "vela-2",
+        brand: "Vela",
+        name: "Honey Amber Crinkle Chiffon",
+        category: "Hijabs",
+        hex: "#D4A373",
+        img: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500&auto=format&fit=crop&q=60",
+        link: "https://velascarves.com/products/honey-amber-crinkle-chiffon"
+      },
+      {
+        id: "vela-3",
+        brand: "Vela",
+        name: "Sage Mist Jersey Lite",
+        category: "Hijabs",
+        hex: "#7E826F",
+        img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&auto=format&fit=crop&q=60",
+        link: "https://velascarves.com/products/sage-mist-jersey-lite"
+      },
+      {
+        id: "vela-4",
+        brand: "Vela",
+        name: "Truffle Modal Scarf",
+        category: "Hijabs",
+        hex: "#4A2311",
+        img: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=500&auto=format&fit=crop&q=60",
+        link: "https://velascarves.com/collections/modal-hijab"
+      },
+      {
+        id: "vela-5",
+        brand: "Vela",
+        name: "Powder Rose Crinkle Chiffon",
+        category: "Hijabs",
+        hex: "#C5A0A4",
+        img: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500&auto=format&fit=crop&q=60",
+        link: "https://velascarves.com/collections/all-scarves"
+      },
+      {
+        id: "vela-6",
+        brand: "Vela",
+        name: "Jet Black Crinkle Chiffon",
+        category: "Hijabs",
+        hex: "#111111",
+        img: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=500&auto=format&fit=crop&q=60",
+        link: "https://velascarves.com/products/jet-black-crinkle-chiffon"
       }
     ];
 
-    async function loadJawdaCatalog() {
-      const fileCandidates = ["./jawda.json", "./jawda.json.json"];
-      for (const path of fileCandidates) {
-        try {
-          const res = await fetch(path);
-          if (res.ok) {
-            const data = await res.json();
-            if (data.products && Array.isArray(data.products) && data.products.length > 0) {
-              PRODUCTS = data.products.map(item => ({
-                id: item.id,
-                name: item.title,
-                category: item.product_type || "Modest Essentials",
-                hex: extractHexFromTitle(item.title),
-                img: item.images && item.images.length > 0 ? item.images[0].src : "",
-                link: `https://jawda.co.uk/products/${item.handle}`
-              }));
-              return;
-            }
-          }
-        } catch (e) {}
+    // Color Wheel Coordinates Mapping
+    const SEASON_WHEEL_COORDS = {
+      "warm-autumn": { angle: 35, dist: 0.65, label: "Warm, Earthy Harmony" },
+      "deep-autumn": { angle: 25, dist: 0.85, label: "Deep, Saturated Warmth" },
+      "soft-autumn": { angle: 45, dist: 0.40, label: "Soft Neutral Warmth" },
+      "warm-spring": { angle: 50, dist: 0.80, label: "Vibrant Golden Warmth" },
+      "light-spring": { angle: 55, dist: 0.35, label: "Luminous Peach Warmth" },
+      "cool-winter": { angle: 220, dist: 0.85, label: "Crisp High-Contrast Cool" },
+      "deep-winter": { angle: 260, dist: 0.90, label: "Intense Midnight Cool" },
+      "cool-summer": { angle: 200, dist: 0.55, label: "Soft Dusty Slate" },
+      "soft-summer": { angle: 180, dist: 0.35, label: "Muted Neutral Cool" }
+    };
+
+    function drawColorWheel(seasonKey) {
+      const canvas = document.getElementById("color-wheel-canvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const size = canvas.width;
+      const center = size / 2;
+      const radius = center - 6;
+
+      ctx.clearRect(0, 0, size, size);
+
+      for (let angle = 0; angle < 360; angle += 1) {
+        const startRad = (angle - 1) * Math.PI / 180;
+        const endRad = (angle + 1) * Math.PI / 180;
+        
+        const grad = ctx.createRadialGradient(center, center, 0, center, center, radius);
+        grad.addColorStop(0, "hsl(" + angle + ", 15%, 85%)");
+        grad.addColorStop(1, "hsl(" + angle + ", 90%, 50%)");
+
+        ctx.beginPath();
+        ctx.moveTo(center, center);
+        ctx.arc(center, center, radius, startRad, endRad);
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+
+      const coord = SEASON_WHEEL_COORDS[seasonKey] || { angle: 35, dist: 0.6, label: "" };
+      const rad = coord.angle * (Math.PI / 180);
+      const pinX = center + Math.cos(rad) * (radius * coord.dist);
+      const pinY = center + Math.sin(rad) * (radius * coord.dist);
+
+      ctx.beginPath();
+      ctx.arc(pinX, pinY, 9, 0, 2 * Math.PI);
+      ctx.fillStyle = "#ffffff";
+      ctx.shadowColor = "rgba(0,0,0,0.35)";
+      ctx.shadowBlur = 6;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      ctx.beginPath();
+      ctx.arc(pinX, pinY, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = "#2b2622";
+      ctx.fill();
+
+      const caption = document.getElementById("wheel-caption");
+      if (caption) {
+        caption.textContent = `Your Spectrum Position: ${coord.label}`;
       }
     }
-    loadJawdaCatalog();
 
-    // 4. Precision 90%+ Diagnostic Engine with Olive Handling
     let currentBaseSeason = "warm-autumn";
     let activeSeason = "warm-autumn";
+    let selectedBrandFilter = "all";
+
+    function setBrandFilter(brandName) {
+      selectedBrandFilter = brandName;
+      document.querySelectorAll('.brand-filter-btn').forEach(btn => btn.classList.remove('active'));
+      
+      if (brandName === 'all') document.getElementById('brand-all').classList.add('active');
+      else if (brandName === 'Jawda') document.getElementById('brand-jawda').classList.add('active');
+      else if (brandName === 'Vela') document.getElementById('brand-vela').classList.add('active');
+
+      renderActiveSeason();
+    }
 
     function calculatePreciseSeason(overtone, orangePref, metalPref, contrast) {
-      // Branch A: Olive Complexion Resolution
       if (overtone === "olive") {
         if (orangePref === "warm") {
-          return contrast === "deep" ? "deep-autumn" : "warm-autumn"; // Warm Olive
+          return contrast === "deep" ? "deep-autumn" : "warm-autumn";
         } else {
-          return contrast === "deep" ? "deep-winter" : "soft-summer";  // Cool/Neutral Olive
+          return contrast === "deep" ? "deep-winter" : "soft-summer";
         }
       }
 
-      // Branch B: Deep Skin Resolution (Prevents default warm assumption)
       if (overtone === "deep") {
         if (orangePref === "cool" || metalPref === "silver") {
-          return "deep-winter"; // Cool deep skin
+          return "deep-winter";
         }
-        return "deep-autumn"; // Warm deep skin
+        return "deep-autumn";
       }
 
-      // Branch C: Standard Precision Scoring Matrix
       let warmScore = 0;
       let coolScore = 0;
 
@@ -558,7 +688,6 @@
       } else if (coolScore > warmScore) {
         return isDeep ? "cool-winter" : "cool-summer";
       } else {
-        // Neutral balance: relies on contrast and overtone
         return isDeep ? "deep-autumn" : "soft-summer";
       }
     }
@@ -592,7 +721,6 @@
       results.scrollIntoView({ behavior: "smooth" });
     });
 
-    // 5. Button State Manager for Calibration
     function setActiveButton(buttonId) {
       document.querySelectorAll('.nudge-btn').forEach(btn => btn.classList.remove('active'));
       const target = document.getElementById(buttonId);
@@ -618,14 +746,12 @@
       renderActiveSeason();
     }
 
-    // 6. Safe DOM Rendering & Background Color Matcher
     function renderActiveSeason() {
       const palette = SEASONS[activeSeason] || SEASONS["warm-autumn"];
 
       document.getElementById("palette-name").textContent = palette.name;
       document.getElementById("palette-desc").textContent = palette.desc;
 
-      // Render Swatches safely
       const swatchesContainer = document.getElementById("palette-swatches");
       swatchesContainer.replaceChildren();
       palette.swatches.forEach(hex => {
@@ -635,8 +761,13 @@
         swatchesContainer.appendChild(circle);
       });
 
-      // Filter products using perceptual color distance threshold
+      drawColorWheel(activeSeason);
+
+      // Delta E matching with active brand filter
       const matchedProducts = PRODUCTS.filter(prod => {
+        if (selectedBrandFilter !== "all" && prod.brand !== selectedBrandFilter) {
+          return false;
+        }
         return palette.swatches.some(swatchHex => {
           try {
             return chroma.deltaE(prod.hex, swatchHex) <= 9.5;
@@ -651,19 +782,18 @@
 
       if (matchedProducts.length === 0) {
         const emptyMsg = document.createElement("p");
-        emptyMsg.textContent = "No products in Jawda's current sample catalog match this exact threshold. Shift tone warmer or cooler to see adjacent matches.";
+        emptyMsg.textContent = "No products found for this season with the selected brand filter. Try selecting 'All Brands' or shifting your tone calibration.";
         emptyMsg.style.color = "#777";
         grid.appendChild(emptyMsg);
         return;
       }
 
-      // Render product cards cleanly
       matchedProducts.forEach(prod => {
         const card = document.createElement("div");
         card.className = "product-card";
 
         const img = document.createElement("img");
-        img.src = prod.img || "https://via.placeholder.com/400x260?text=Jawda+Modest";
+        img.src = prod.img;
         img.alt = prod.name;
         img.loading = "lazy";
 
@@ -672,9 +802,14 @@
 
         const headerDiv = document.createElement("div");
 
+        // Distinct Brand Badge (Jawda vs. Vela)
+        const brandBadge = document.createElement("span");
+        brandBadge.className = `brand-badge ${prod.brand.toLowerCase()}`;
+        brandBadge.textContent = prod.brand;
+
         const cat = document.createElement("div");
         cat.className = "product-cat";
-        cat.textContent = `${prod.category} • Jawda Essentials`;
+        cat.textContent = prod.category;
 
         const title = document.createElement("div");
         title.className = "product-name";
@@ -694,6 +829,7 @@
         swatchRow.appendChild(miniCircle);
         swatchRow.appendChild(hexLabel);
 
+        headerDiv.appendChild(brandBadge);
         headerDiv.appendChild(cat);
         headerDiv.appendChild(title);
         headerDiv.appendChild(swatchRow);
@@ -703,7 +839,7 @@
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         link.className = "shop-link";
-        link.textContent = "Shop on Jawda \u2192";
+        link.textContent = `Shop on ${prod.brand} \u2192`;
 
         info.appendChild(headerDiv);
         info.appendChild(link);
@@ -716,4 +852,3 @@
   </script>
 </body>
 </html>
-
